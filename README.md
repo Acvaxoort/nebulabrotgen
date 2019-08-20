@@ -4,7 +4,7 @@ Things you can saily change:\
 -size: zoom - higher means zoomed out\
 -width, height: dimensions of the output file\
 -iterations: number of attempts of computing buddhabrot orbits (not the same as iterations of divergence, like in classic mandelbrot)\
--func: cemplex function of the fractal (classic mandelbrot/nebulabrot: z = z * z + c;)
+-func: complex function of the fractal (classic mandelbrot/nebulabrot: z = z * z + c;)
 
 Things that can also be done but not so easily:\
 -img_func, img_monochrome: functions computing the values of pixels based on fractal results\
