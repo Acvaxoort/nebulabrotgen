@@ -17,7 +17,7 @@ Things that can also be done but not so easily:\
 To run (linux):\
 cmake -DCMAKE_BUILD_TYPE=Release\
 make\
-./nebulabrot\
+./nebulabrotgen\
 \
 Examples:\
 https://drive.google.com/open?id=1NGYRuzK0Bpp1TY1gfyXnizgmUKXHnGaf
