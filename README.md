@@ -20,7 +20,7 @@ To run (linux):\
 cmake -DCMAKE_BUILD_TYPE=Release\
 make\
 ./nebulabrotgen\
-OR just put the files into a new CodeBlocks or CLion project (some MinGW versions have issues with thread library on windows)
+OR just put the files into a new CodeBlocks or CLion project (some MinGW versions have issues with thread library on windows)\
 \
 Examples:\
 https://drive.google.com/open?id=1NGYRuzK0Bpp1TY1gfyXnizgmUKXHnGaf
