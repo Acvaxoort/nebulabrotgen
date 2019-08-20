@@ -157,8 +157,9 @@ int main() {
   logMessage("Loaded function in " + std::to_string(time) + "seconds");
 */
 
+  size_t threads = std::thread::hardware_concurrency();
 
-  NebulabrotRenderingManager manager(xmid, ymid, size, width, height, 12);
+  NebulabrotRenderingManager manager(xmid, ymid, size, width, height, threads);
   manager.add("i1", NebulabrotIterationData(32, iterations, InnerFunctionData(func, 1)));
   manager.add("i2", NebulabrotIterationData(45, iterations, InnerFunctionData(func, 1)));
   manager.add("i3", NebulabrotIterationData(64, iterations, InnerFunctionData(func, 1)));
