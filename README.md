@@ -1,5 +1,5 @@
 To render you must compile, tested on linux, not tested on windows yet.\
-Things you can saily change:\
+Things you can easily change:\
 -xmid, ymid: real and imag centre of the image\
 -size: zoom - higher means zoomed out\
 -width, height: dimensions of the output file\
