@@ -14,5 +14,10 @@ Things that can also be done but not so easily:\
 -func_whole: function that computes the whole image, not individual pixels, should be put in the img_manager.add("iall", ImageOutputData(ImageFunctionData(...), ...));\
 -dynamic function loading, compilation of function before rendering, definitely linux exclisive: bunch of commented code in main.cpp\
 \
+To run (linux):\
+cmake -DCMAKE_BUILD_TYPE=Release\
+make\
+./nebulabrot\
+\
 Examples:\
 https://drive.google.com/open?id=1NGYRuzK0Bpp1TY1gfyXnizgmUKXHnGaf
