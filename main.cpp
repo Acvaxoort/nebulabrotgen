@@ -12,6 +12,7 @@ const double ymid = 0;
 const double size = 4;
 const size_t width = 1920;
 const size_t height = 1080;
+const size_t iterations = 1000000;
 
 inline double limit(double value) {
   return std::min(1.0, std::max(0.0, value));
@@ -158,13 +159,13 @@ int main() {
 
 
   NebulabrotRenderingManager manager(xmid, ymid, size, width, height, 12);
-  manager.add("i1", NebulabrotIterationData(32, 1000000, InnerFunctionData(func, 1)));
-  manager.add("i2", NebulabrotIterationData(45, 1000000, InnerFunctionData(func, 1)));
-  manager.add("i3", NebulabrotIterationData(64, 1000000, InnerFunctionData(func, 1)));
-  manager.add("i4", NebulabrotIterationData(91, 1000000, InnerFunctionData(func, 1)));
-  manager.add("i5", NebulabrotIterationData(128, 1000000, InnerFunctionData(func, 1)));
-  manager.add("i6", NebulabrotIterationData(181, 1000000, InnerFunctionData(func, 1)));
-  manager.add("i7", NebulabrotIterationData(256, 1000000, InnerFunctionData(func, 1)));
+  manager.add("i1", NebulabrotIterationData(32, iterations, InnerFunctionData(func, 1)));
+  manager.add("i2", NebulabrotIterationData(45, iterations, InnerFunctionData(func, 1)));
+  manager.add("i3", NebulabrotIterationData(64, iterations, InnerFunctionData(func, 1)));
+  manager.add("i4", NebulabrotIterationData(91, iterations, InnerFunctionData(func, 1)));
+  manager.add("i5", NebulabrotIterationData(128, iterations, InnerFunctionData(func, 1)));
+  manager.add("i6", NebulabrotIterationData(181, iterations, InnerFunctionData(func, 1)));
+  manager.add("i7", NebulabrotIterationData(256, iterations, InnerFunctionData(func, 1)));
   auto collection = manager.execute();
 
   //NebulabrotChannelCollection collection_raw(width, height);
