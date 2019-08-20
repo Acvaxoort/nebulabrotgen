@@ -14,7 +14,7 @@ Things that can also be done but not so easily:\
 -func_whole: function that computes the whole image, not individual pixels, should be put in the img_manager.add("iall", ImageOutputData(ImageFunctionData(...), ...));\
 -norm limit before divergence is decided: BuddhabrotRenderer constructor(norm_limit), should have made it easier but lazy\
 -radius of random start points: BuddhabrotRenderer constructor(random_radius)\
--dynamic function loading, compilation of function before rendering, definitely linux exclisive: bunch of commented code in main.cpp (uncomment #target_link_libraries(nebulabrotgen dl))\
+-dynamic function loading, compilation of function before rendering, definitely linux exclusive: bunch of commented code in main.cpp (uncomment #target_link_libraries(nebulabrotgen dl))\
 \
 To run (linux):\
 cmake -DCMAKE_BUILD_TYPE=Release\
