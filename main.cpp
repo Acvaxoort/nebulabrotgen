@@ -13,8 +13,8 @@ const double size = 8;
 const size_t width = 1920;
 const size_t height = 1080;
 const size_t iterations = 1000000;
-const double random_radius = 16;
-const double norm_limit = 100000;
+const double random_radius = 4;
+const double norm_limit = 256;
 
 inline double limit(double value) {
   return std::min(1.0, std::max(0.0, value));
