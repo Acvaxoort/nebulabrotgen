@@ -6,7 +6,7 @@ Things you can easily change:\
 -iterations: number of attempts of computing buddhabrot orbits (not the same as iterations of divergence, like in classic mandelbrot)\
 -func: complex function of the fractal (classic mandelbrot/nebulabrot: z = z * z + c;)
 -random_radius: radius where random starting points are chosen, usually doesn't have to be touched\
--norm_limit: radius which determines when the iteration diverges, usually doesn't have to be touched but for some functions like exponential, it has to be very high to get a good image
+-norm_limit: radius which determines when the iteration diverges, usually doesn't have to be touched but for some functions like exponential, it has to be very high to get a good image\
 \
 Things that can also be done but not so easily:\
 -img_func, img_monochrome: functions computing the values of pixels based on fractal results\
