@@ -1,4 +1,4 @@
-To render you must compile, tested on linux, not tested on windows yet.\
+To render you must compile, tested on linux, and windows.\
 Things you can easily change:\
 -xmid, ymid: real and imag centre of the image\
 -size: zoom - higher means zoomed out\
@@ -20,6 +20,7 @@ To run (linux):\
 cmake -DCMAKE_BUILD_TYPE=Release\
 make\
 ./nebulabrotgen\
+OR just put the files into a new CodeBlocks or CLion project (some MinGW versions have issues with thread library on windows)\
 \
 Examples:\
 https://drive.google.com/open?id=1NGYRuzK0Bpp1TY1gfyXnizgmUKXHnGaf
