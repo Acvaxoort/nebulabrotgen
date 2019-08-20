@@ -88,6 +88,7 @@ struct IterJobData {
 class NebulabrotRenderingManager {
 public:
   NebulabrotRenderingManager(double xmid, double ymid, double factor,
+                             double random_radius, double norm_limit,
                              size_t width, size_t height, size_t num_threads);
   bool add(const std::string& name, const NebulabrotIterationData& iteration_data);
   NebulabrotChannelCollection execute();
@@ -110,6 +111,8 @@ private:
   double xmid;
   double ymid;
   double factor;
+  double random_radius;
+  double norm_limit;
   size_t width;
   size_t height;
   size_t num_threads;

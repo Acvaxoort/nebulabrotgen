@@ -19,8 +19,10 @@ const double RANDOM_MAX = std::mt19937::max();
 template<typename real_t>
 class BuddhabrotRenderer {
 public:
-  BuddhabrotRenderer(size_t width, size_t height, size_t max_iter, size_t init_points, void(*func)(std::complex<real_t>&, std::complex<real_t>), real_t random_radius = 16, real_t norm_limit = 1000)
-      : width(width), height(height), max_iter(max_iter), init_points(init_points), norm_limit(norm_limit), rand_min(-random_radius), rand_offset(2*random_radius),
+  BuddhabrotRenderer(size_t width, size_t height, size_t max_iter, size_t init_points,
+                     void(* func)(std::complex<real_t>&, std::complex<real_t>), real_t random_radius, real_t norm_limit)
+      : width(width), height(height), max_iter(max_iter), init_points(init_points), norm_limit(norm_limit),
+        rand_min(-random_radius), rand_offset(2 * random_radius),
         orbit_x(max_iter), orbit_y(max_iter), initial(init_points), func(func) {
     std::hash<std::thread::id> hasher;
     random.seed(hasher(std::this_thread::get_id()));
@@ -29,7 +31,7 @@ public:
   void setArea(real_t xmid, real_t ymid, real_t factor) {
     this->diff = {width * factor * 2.0 / (width + height), height * factor * 2.0 / (width + height)};
     this->mid = {xmid, ymid};
-    this->beg = mid - diff*0.5;
+    this->beg = mid - diff * 0.5;
     this->end = beg + diff;
     this->factor = factor;
   }
@@ -37,7 +39,7 @@ public:
   void prepareInitialPoints() {
     for (size_t i = 0; i < init_points; ++i) {
       do {
-      } while(!findInitialPointAttempt(initial[i]));
+      } while (!findInitialPointAttempt(initial[i]));
     }
   }
 
@@ -45,7 +47,7 @@ public:
     for (size_t i = 0; i < init_points; ++i) {
       computeOrbit(0, initial[i]);
       for (size_t k = 0; k < curr_on_screen; ++k) {
-        ++out[orbit_y[k]*width + orbit_x[k]];
+        ++out[orbit_y[k] * width + orbit_x[k]];
       }
       prev_on_screen = curr_on_screen;
       prev_iter = curr_iter;
@@ -61,16 +63,16 @@ public:
         }
         real_t t1 = transitionProbability(curr_on_screen, prev_on_screen);
         real_t t2 = transitionProbability(prev_on_screen, curr_on_screen);
-        real_t alpha = std::min(1.0,std::exp(std::log(curr_contrib*t1)-std::log(prev_contrib*t2)));
+        real_t alpha = std::min(1.0, std::exp(std::log(curr_contrib * t1) - std::log(prev_contrib * t2)));
 
-        if (alpha > ((real_t)random())/RANDOM_MAX) {
+        if (alpha > ((real_t) random()) / RANDOM_MAX) {
           prev_on_screen = curr_on_screen;
           prev_iter = curr_iter;
           prev_contrib = curr_contrib;
           initial[i] = x;
 
           for (size_t k = 0; k < curr_on_screen; ++k) {
-            ++out[orbit_y[k]*width + orbit_x[k]];
+            ++out[orbit_y[k] * width + orbit_x[k]];
           }
         }
       }
@@ -83,26 +85,26 @@ private:
   }
 
   real_t norm(real_t a, real_t b) {
-    return a*a + b*b;
+    return a * a + b * b;
   }
 
   void mutateMove(std::complex<real_t>& num) {
     real_t r1 = factor * 0.0001;
     real_t r2 = factor * 0.1;
-    real_t phi = (((real_t)random())/RANDOM_MAX) * M_PI * 2.0;
-    real_t r = r2* std::exp( -std::log(r2/r1) * (((real_t)random())/RANDOM_MAX) );
+    real_t phi = (((real_t) random()) / RANDOM_MAX) * M_PI * 2.0;
+    real_t r = r2 * std::exp(-std::log(r2 / r1) * (((real_t) random()) / RANDOM_MAX));
     num += std::polar(r, phi);
   }
 
   void mutateRandom(std::complex<real_t>& num) {
     do {
-      num.real(mapv(((real_t)random())/RANDOM_MAX, 0, 1, rand_min, rand_offset));
-      num.imag(mapv(((real_t)random())/RANDOM_MAX, 0, 1, rand_min, rand_offset));
+      num.real(mapv(((real_t) random()) / RANDOM_MAX, 0, 1, rand_min, rand_offset));
+      num.imag(mapv(((real_t) random()) / RANDOM_MAX, 0, 1, rand_min, rand_offset));
     } while (std::norm(num) > norm_limit);
   }
 
   void mutate(std::complex<real_t>& num) {
-    if (random()%5) {
+    if (random() % 5) {
       mutateRandom(num);
     } else {
       mutateMove(num);
@@ -110,8 +112,8 @@ private:
   }
 
   real_t transitionProbability(size_t n1, size_t n2) {
-    return  (1.0 - ((real_t)(max_iter - n1)) / max_iter) /
-            (1.0 - ((real_t)(max_iter - n2)) / max_iter);
+    return (1.0 - ((real_t) (max_iter - n1)) / max_iter) /
+           (1.0 - ((real_t) (max_iter - n2)) / max_iter);
   }
 
   void computeOrbit(std::complex<real_t> a, std::complex<real_t> add) {
@@ -139,7 +141,7 @@ private:
       }
       ++curr_iter;
     }
-    curr_contrib = ((real_t)curr_on_screen)/curr_iter;
+    curr_contrib = ((real_t) curr_on_screen) / curr_iter;
   }
 
   bool findInitialPointAttempt(std::complex<real_t>& num) {
@@ -154,8 +156,8 @@ private:
       for (int j = 0; j < find_iter_2; ++j) {
 
         std::complex<real_t> temp = num;
-        real_t phi = (((real_t)random())/RANDOM_MAX) * M_PI * 2.0;
-        real_t r = (((real_t)random())/RANDOM_MAX) * rand_rad;
+        real_t phi = (((real_t) random()) / RANDOM_MAX) * M_PI * 2.0;
+        real_t r = (((real_t) random()) / RANDOM_MAX) * rand_rad;
         temp += std::polar(r, phi);
         computeOrbit(0, temp);
 
@@ -169,7 +171,7 @@ private:
         }
 
         for (size_t k = 0; k < curr_iter; ++k) {
-          real_t dist2 = norm(orbit_x[k]-mid.real(), orbit_y[k]-mid.imag());
+          real_t dist2 = norm(orbit_x[k] - mid.real(), orbit_y[k] - mid.imag());
           if (dist2 < closest) {
             closest = dist2;
             next = temp;
@@ -195,21 +197,8 @@ private:
   std::vector<uint16_t> orbit_y;
   std::vector<std::complex<real_t>> initial;
   std::mt19937 random;
-  void(*func)(std::complex<real_t>&, std::complex<real_t>);
-};
 
-template<typename real_t>
-void SpawnOutput(uint32_t* out, void(*func)(real_t&, real_t&, real_t, real_t),
-                 size_t width, size_t height, size_t max_iter, size_t init_points, double xmid, double ymid, double factor, size_t iterations, int thread_id, int thread_sub_id) {
-  BuddhabrotRenderer<real_t> br(width, height, max_iter, 16, func);
-  br.SetArea(xmid, ymid, factor);
-  br.thread_id = thread_id;
-  br.thread_sub_id = thread_sub_id;
-  auto time_begin = std::chrono::high_resolution_clock::now();
-  br.prepareInitialPoints();
-  br.outputPointValues(out, iterations);
-  double time = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::high_resolution_clock::now() - time_begin).count();
-  std::cout<<std::to_string(thread_id) + ", " + std::to_string(thread_sub_id) + ": Finished, time: " + std::to_string(time) + "s" << std::endl;
-}
+  void (* func)(std::complex<real_t>&, std::complex<real_t>);
+};
 
 #endif //CPPPROJ_STDCOMPLEXRENDERER_H

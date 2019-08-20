@@ -9,10 +9,12 @@
 
 const double xmid = 0;
 const double ymid = 0;
-const double size = 4;
+const double size = 8;
 const size_t width = 1920;
 const size_t height = 1080;
 const size_t iterations = 1000000;
+const double random_radius = 16;
+const double norm_limit = 100000;
 
 inline double limit(double value) {
   return std::min(1.0, std::max(0.0, value));
@@ -22,8 +24,10 @@ inline double mapv(double value, double in_diff, double out_diff) {
   return value * out_diff / in_diff;
 }
 
+typedef std::complex<double> complex;
+
 void func(std::complex<double>& z, std::complex<double> c) {
-  z = z * z + c;
+  z = z * c + c;
 }
 
 uint32_t img_func(double* values) {
@@ -159,7 +163,7 @@ int main() {
 
   size_t threads = std::thread::hardware_concurrency();
 
-  NebulabrotRenderingManager manager(xmid, ymid, size, width, height, threads);
+  NebulabrotRenderingManager manager(xmid, ymid, size, random_radius, norm_limit, width, height, threads);
   manager.add("i1", NebulabrotIterationData(32, iterations, InnerFunctionData(func, 1)));
   manager.add("i2", NebulabrotIterationData(45, iterations, InnerFunctionData(func, 1)));
   manager.add("i3", NebulabrotIterationData(64, iterations, InnerFunctionData(func, 1)));

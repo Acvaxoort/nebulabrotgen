@@ -229,8 +229,9 @@ bool NebulabrotRenderChannel::operator<(const NebulabrotRenderChannel& other) co
 }
 
 NebulabrotRenderingManager::NebulabrotRenderingManager(double xmid, double ymid, double factor,
+                                                       double random_radius, double norm_limit,
                                                        size_t width, size_t height, size_t num_threads)
-    : xmid(xmid), ymid(ymid), factor(factor),
+    : xmid(xmid), ymid(ymid), factor(factor), random_radius(random_radius), norm_limit(norm_limit),
       width(width), height(height), num_threads(num_threads) {}
 
 bool NebulabrotRenderingManager::add(const std::string& name, const NebulabrotIterationData& iteration_data) {
@@ -346,7 +347,7 @@ void NebulabrotRenderingManager::threadFunction(size_t start_channel, size_t thr
     start_channel = job.num_channel;
     if (previous_channel != start_channel) {
       renderer.reset(new BuddhabrotRenderer<double>
-               (width, height, job.iter_data.inner_iterations, 16, job.iter_data.func.ptr));
+               (width, height, job.iter_data.inner_iterations, 16, job.iter_data.func.ptr, random_radius, norm_limit));
       renderer->setArea(xmid, ymid, factor);
       try {
         renderer->prepareInitialPoints();
