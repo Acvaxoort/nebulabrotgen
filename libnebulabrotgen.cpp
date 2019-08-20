@@ -46,6 +46,15 @@ void NebulabrotChannelBuffer::clear() {
   std::fill(data.begin(), data.end(), 0);
 }
 
+uint32_t* NebulabrotChannelBuffer::getData() {
+  return data.data();
+}
+
+uint32_t NebulabrotChannelBuffer::getMaxValue() const {
+  std::lock_guard<std::mutex> lock(*mergeMutex);
+  return max_value;
+}
+
 bool NebulabrotChannelBuffer::mergeWith(const NebulabrotChannelBuffer& other) {
   std::lock_guard<std::mutex> lock(*mergeMutex);
   size_t mem_size = data.size();
@@ -74,6 +83,7 @@ bool NebulabrotChannelBuffer::fromStream(std::istream& is) {
 }
 
 void NebulabrotChannelBuffer::updateMaxValue() {
+  std::lock_guard<std::mutex> lock(*mergeMutex);
 #ifdef RENDERING_DEBUG
   auto time_begin = std::chrono::high_resolution_clock::now();
 #endif
@@ -84,6 +94,7 @@ void NebulabrotChannelBuffer::updateMaxValue() {
       max_value = data[i];
     }
   }
+
 #ifdef RENDERING_DEBUG
   double time = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::high_resolution_clock::now() - time_begin).count();
   std::cout<<"Updated max value in " + std::to_string(time) + "s\n";
@@ -304,17 +315,18 @@ NebulabrotChannelCollection NebulabrotRenderingManager::execute() {
 #endif
   std::vector<std::thread> threads;
   size_t temp_channel_num = channels.size() - 1;
-  leave_mutex.lock();
-  for (size_t i = 0; i < num_threads; ++i) {
-    channels[temp_channel_num].threads_on_channel++;
-    threads.emplace_back(&NebulabrotRenderingManager::threadFunction, this, temp_channel_num, i);
-    if (temp_channel_num == 0) {
-      temp_channel_num = channels.size() - 1;
-    } else {
-      temp_channel_num--;
+  {
+    std::lock_guard<std::mutex> lock1(leave_mutex);
+    for (size_t i = 0; i < num_threads; ++i) {
+      channels[temp_channel_num].threads_on_channel++;
+      threads.emplace_back(&NebulabrotRenderingManager::threadFunction, this, temp_channel_num, i);
+      if (temp_channel_num == 0) {
+        temp_channel_num = channels.size() - 1;
+      } else {
+        temp_channel_num--;
+      }
     }
   }
-  leave_mutex.unlock();
   for (size_t i = 0; i < num_threads; ++i) {
     threads[i].join();
   }
@@ -431,17 +443,14 @@ void NebulabrotRenderingManager::leaveChannel(size_t previous_channel, size_t ne
 #ifdef RENDERING_DEBUG
   std::cout<<"Thread " + std::to_string(thread_num) + " merged channel " + std::to_string(previous_channel) + "\n";
 #endif
-  leave_mutex.lock();
+  std::lock_guard<std::mutex> lock(leave_mutex);
   if (new_channel != NO_CHANNEL) {
     channels[new_channel].threads_on_channel++;
   }
   if (previous_channel != NO_CHANNEL) {
     channels[previous_channel].threads_on_channel--;
     if (channels[previous_channel].threads_on_channel == 0 && channels[previous_channel].unfinished_jobs == 0) {
-      leave_mutex.unlock();
       channels[previous_channel].buf->updateMaxValue();
-    } else {
-      leave_mutex.unlock();
     }
   }
 }
@@ -671,7 +680,12 @@ void ImageRenderingManager::doJob(const ImageJobData& job, size_t image_num) {
       return;
     } else {
       input_channels.push_back(it->second.getData() + job.start_index);
-      maximum_values.push_back(it->second.getMaxValue());
+      size_t max_value = it->second.getMaxValue();
+      if (max_value == 0) {
+        it->second.updateMaxValue();
+        max_value = it->second.getMaxValue();
+      }
+      maximum_values.push_back(max_value);
       completed_iterations.push_back(it->second.completed_iterations);
     }
   }
@@ -682,6 +696,7 @@ void ImageRenderingManager::doJob(const ImageJobData& job, size_t image_num) {
     std::vector<double> current_values(num_channels);
     std::vector<double> multiplier(num_channels);
     uint32_t* output = images[image_num].buf->getData() + job.start_index;
+
     for (size_t j = 0; j < num_channels; ++j) {
       if (desired_max[j] <= 0.0) {
         multiplier[j] = 1;

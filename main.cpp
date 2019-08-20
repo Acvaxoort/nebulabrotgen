@@ -178,7 +178,7 @@ int main() {
   //collection.merge(collection_raw);
   //collection.saveFile("raw");
 
-  ImageRenderingManager img_manager(12);
+  ImageRenderingManager img_manager(threads);
   img_manager.add("iall", ImageOutputData(ImageFunctionData(img_func, {"i1", "i2", "i3", "i4", "i5", "i6", "i7"}, {}), &collection));
   img_manager.add("i1", ImageOutputData(ImageFunctionData(img_monochrome, {"i1"}, {}), &collection));
   img_manager.add("i2", ImageOutputData(ImageFunctionData(img_monochrome, {"i2"}, {}), &collection));

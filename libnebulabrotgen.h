@@ -19,8 +19,8 @@ public:
   NebulabrotChannelBuffer& operator=(const NebulabrotChannelBuffer& other);
 
   void clear();
-  inline uint32_t* getData() { return data.data(); }
-  inline uint32_t getMaxValue() const { return max_value; }
+  uint32_t* getData();
+  uint32_t getMaxValue() const;
   bool mergeWith(const NebulabrotChannelBuffer& other);
   bool toStream(std::ostream& os);
   bool fromStream(std::istream& is);
